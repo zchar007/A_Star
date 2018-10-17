@@ -144,9 +144,15 @@ public class Map extends JPanel implements Serializable {
 		for (int i = 0; i < next.length; i++) {
 			if (next[i] != null) {
 				double nextDist = next[i].getDistFromStart();
-				//if(now.equals(Node.getEndNode())){
+				//增加过是开始节点，则直接返回，防止在开始节点的前一个点走入死循环
+				if(next[i].isStart()){
+					return next[i];
+				}
+				if(!next[i].isHisWay() && !next[i].isPath()){
+					continue;
+				}
 				double c = now.getThrowCost(next[i]);
-				if(c > 0){
+				if(c >= 0){
 					nextDist+= c;
 				}
 				//}

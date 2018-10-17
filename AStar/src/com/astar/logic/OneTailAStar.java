@@ -140,6 +140,7 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 			if (now == stop) {
 				finished = true;
 			}
+
 			try {
 				Thread.sleep(AStar.DRAW_PATH_INTERVAL);
 			} catch (InterruptedException e) {

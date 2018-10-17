@@ -438,25 +438,25 @@ public class Node extends JComponent implements Serializable {
 		Point point1 = this.getPoint();
 		Point point2 = fatherNode.getPoint();
 
-		int y1 = (int) point1.getX();
+		int y1 = (int) point1.getX();//行
 		int y2 = (int) point2.getX();
 
-		int x1 = (int) point1.getY();
+		int x1 = (int) point1.getY();//列
 		int x2 = (int) point2.getY();
 
 		int h_t, v_t, p_t;
 		// 上下
-		if (x1 > x2) {// 下
+		if (y1 > y2) {// 下
 			v_t = AStar.ORDER_DOWN;
-		} else if (x1 < x2) {// 上
+		} else if (y1 < y2) {// 上
 			v_t = AStar.ORDER_UP;
 		} else {
 			v_t = AStar.ORDER_SELF;
 		}
 		// 左右
-		if (y1 > y2) {// 右
+		if (x1 > x2) {// 右
 			h_t = AStar.ORDER_RIGHT;
-		} else if (y1 < y2) {// 左
+		} else if (x1 < x2) {// 左
 			h_t = AStar.ORDER_LEFT;
 		} else {
 			h_t = AStar.ORDER_SELF;
