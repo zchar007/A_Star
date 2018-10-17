@@ -49,11 +49,10 @@ public class Node extends JComponent implements Serializable {
 
 	private static Node startNode;
 	private static Node endNode;
-	
+
 	public static boolean canDraw = true;
 
-	private transient double distFromStart = -1;
-	private transient double distFromFinish = -1;
+	private transient double distFromStart = 999999999;
 
 	private static boolean showPath = true;
 
@@ -77,29 +76,29 @@ public class Node extends JComponent implements Serializable {
 		this.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(canDraw){
-				if (e.getButton() == e.BUTTON1) {
-					rightMouseIsClick = false;
-					toByType(AStar.NOW_DRAW_TYPE);
-				}
-				if (e.getButton() == e.BUTTON3) {
-					rightMouseIsClick = true;
-				}
+				if (canDraw) {
+					if (e.getButton() == e.BUTTON1) {
+						rightMouseIsClick = false;
+						toByType(AStar.NOW_DRAW_TYPE);
+					}
+					if (e.getButton() == e.BUTTON3) {
+						rightMouseIsClick = true;
+					}
 				}
 			}
 		});
 		this.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if(canDraw){
+				if (canDraw) {
 
-				if (e.getButton() == e.BUTTON1) {
-					rightMouseIsClick = false;
-					toByType(AStar.NOW_DRAW_TYPE);
-				}
-				if (e.getButton() == e.BUTTON3) {
-					rightMouseIsClick = true;
-				}
+					if (e.getButton() == e.BUTTON1) {
+						rightMouseIsClick = false;
+						toByType(AStar.NOW_DRAW_TYPE);
+					}
+					if (e.getButton() == e.BUTTON3) {
+						rightMouseIsClick = true;
+					}
 				}
 			}
 
@@ -124,32 +123,41 @@ public class Node extends JComponent implements Serializable {
 	 */
 	public void drawColor(int now_draw_type) {
 
-		my_draw_type = now_draw_type;
-		my_draw_color = AStar.getColor(now_draw_type);
+		if (AStar.NODE_PATH != now_draw_type && AStar.NODE_HIS_WAY != now_draw_type) {
+			my_draw_type = now_draw_type;
+			my_draw_color = AStar.getColor(now_draw_type);
+		}
 		repaint();
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		// 质询与有一个开始点，一个结束点,本点是起始点或当前要画起始点
-		if (my_draw_type == AStar.NODE_START || (null != Node.startNode && Node.startNode.equals(this))) {
-			Vector<Node> nodes = Map.getNodes();
-			for (int i = 0; i < nodes.size(); i++) {
-				Node node = nodes.get(i);
-				if (node != this && node.isStart()) {
-					node.toGround();
+		// 只允许有一个开始点，一个结束点,本点是起始点或当前要画起始点
+		// 要画开始点
+		if (my_draw_type == AStar.NODE_START) {
+			// 当前点现在不是开始节点，则删除其他开始节点
+			if (null != Node.startNode && !Node.startNode.equals(this)) {
+				Vector<Node> nodes = Map.getNodes();
+				for (int i = 0; i < nodes.size(); i++) {
+					Node node = nodes.get(i);
+					if (node != this && node.isStart()) {
+						node.toGround();
+					}
 				}
 			}
+
 			Node.startNode = this;
 			my_draw_type = AStar.NODE_START;
 			my_draw_color = AStar.getColor(my_draw_type);
-		} else if (my_draw_type == AStar.NODE_END || null != Node.endNode && Node.endNode.equals(this)) {
-			Vector<Node> nodes = Map.getNodes();
-			for (int i = 0; i < nodes.size(); i++) {
-				Node node = nodes.get(i);
-				if (node != this && node.isEnd()) {
-					node.toGround();
+		} else if (my_draw_type == AStar.NODE_END) {
+			if (null != Node.endNode && !Node.endNode.equals(this)) {
+				Vector<Node> nodes = Map.getNodes();
+				for (int i = 0; i < nodes.size(); i++) {
+					Node node = nodes.get(i);
+					if (node != this && node.isEnd()) {
+						node.toGround();
+					}
 				}
 			}
 			Node.endNode = this;
@@ -166,24 +174,26 @@ public class Node extends JComponent implements Serializable {
 		super.paint(bg);
 		Graphics2D bg2d = (Graphics2D) bg;
 
-		// TODO :如果是路径点或搜寻路径点，则还要画上其他东西
-		// canvas.repaint();
-//		bg2d.setColor(my_draw_color);
-//		bg2d.fillRect(0, 0, AStar.NODE_SIZE - Node.LINE_WIDTH, AStar.NODE_SIZE - Node.LINE_WIDTH);
-
-		if (Node.showPath && (this.isPath() || this.isHisWay())) {
-
+		bg2d.setColor(my_draw_color);
+		bg2d.fillRect(0, 0, AStar.NODE_SIZE - Node.LINE_WIDTH, AStar.NODE_SIZE - Node.LINE_WIDTH);
+		if (Node.showPath && this.isHisWay()) {
 			bg2d.setColor(Color.BLACK);
 			Font font2 = new Font("SansSerif", Font.ITALIC, AStar.NODE_SIZE / 4);
 			bg2d.setFont(font2);
-			bg2d.drawString(df.format(this.getDistFromStart()) + "", 5, AStar.NODE_SIZE / 3);
+			bg2d.drawString(df.format(this.getDistFromStart()) + "", AStar.NODE_SIZE / 5, AStar.NODE_SIZE / 2);
 
-			bg2d.setColor(my_draw_color);
+			bg2d.setColor(AStar.COLOR_HIS_WAY);
 			bg2d.setStroke(new BasicStroke(AStar.NODE_SIZE / 5));
 			bg2d.drawRect(0, 0, AStar.NODE_SIZE - Node.LINE_WIDTH, AStar.NODE_SIZE - Node.LINE_WIDTH);
-		} else {
-			bg2d.setColor(my_draw_color);
-			bg2d.fillRect(0, 0, AStar.NODE_SIZE - Node.LINE_WIDTH, AStar.NODE_SIZE - Node.LINE_WIDTH);
+		} else if (Node.showPath && this.isPath()) {
+			bg2d.setColor(Color.BLACK);
+			Font font2 = new Font("SansSerif", Font.ITALIC, AStar.NODE_SIZE / 4);
+			bg2d.setFont(font2);
+			bg2d.drawString(df.format(this.getDistFromStart()) + "", AStar.NODE_SIZE / 5, AStar.NODE_SIZE / 2);
+
+			bg2d.setColor(AStar.COLOR_PATH);
+			bg2d.setStroke(new BasicStroke(AStar.NODE_SIZE / 5));
+			bg2d.drawRect(0, 0, AStar.NODE_SIZE - Node.LINE_WIDTH, AStar.NODE_SIZE - Node.LINE_WIDTH);
 		}
 
 		// 路径画上框

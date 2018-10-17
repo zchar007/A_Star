@@ -1,13 +1,13 @@
 package com.astar.model;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.io.Serializable;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
 import com.astar.AStar;
+import com.astar.AStarException;
 
 public class Map extends JPanel implements Serializable {
 	/**
@@ -45,6 +45,7 @@ public class Map extends JPanel implements Serializable {
 		super.repaint();
 
 	}
+
 	public void clearPath() {
 		Node.canDraw = true;
 		for (int i = 0; i < nodes.size(); i++) {
@@ -52,6 +53,7 @@ public class Map extends JPanel implements Serializable {
 		}
 		repaint();
 	}
+
 	public void clear() {
 		Node.canDraw = true;
 		nodes = new Vector<>();
@@ -80,9 +82,6 @@ public class Map extends JPanel implements Serializable {
 
 		int number = now.getNumber();
 		int every = AStar.MAP_SIZE / AStar.NODE_SIZE;
-		Point p = now.getPoint();
-		int row = (int) p.getX();
-		int line = (int) p.getY();
 
 		if (AStar.STRAIGHT) {
 			// 上
@@ -125,16 +124,40 @@ public class Map extends JPanel implements Serializable {
 		return node_array;
 	}
 
-	public Node getLowestAdjacent(Node now) {
+	/**
+	 * TOFINE 这里对原作者的逻辑进行了优化<br>
+	 * 原作者设计的逻辑不能满足斜着走取最优，这里终点到起点方向的反向cost进行再次判断，和当前distFromStart值相加后最小的便是最优解
+	 * <br>
+	 * 参照以下地图片段制图即可理解<br>
+	 * 
+	 * end, fineway, fineway, normalway,.......<br>
+	 * normalway, fineway, fineway, normalway.........<br>
+	 * normalway, normalway, normalway, normalway.........<br>
+	 * normalway, normalway, normalway, start.........<br>
+	 * @throws AStarException 
+	 * 
+	 */
+	public Node getLowestAdjacent(Node now) throws AStarException {
 		Node next[] = getAdjacent(now);
 		Node small = next[0];
 		double dist = Double.MAX_VALUE;
 		for (int i = 0; i < next.length; i++) {
 			if (next[i] != null) {
 				double nextDist = next[i].getDistFromStart();
+				//if(now.equals(Node.getEndNode())){
+				double c = now.getThrowCost(next[i]);
+				if(c > 0){
+					nextDist+= c;
+				}
+				//}
 				if (nextDist < dist && nextDist >= 0) {
 					small = next[i];
-					dist = next[i].getDistFromStart();
+					if(c > 0){
+						dist = next[i].getDistFromStart()+now.getThrowCost(next[i]);
+					}else{
+						dist = next[i].getDistFromStart();
+					}
+					
 				}
 			}
 		}

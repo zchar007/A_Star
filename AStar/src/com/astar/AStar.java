@@ -5,7 +5,7 @@ import java.awt.Color;
 public class AStar {
 
 	public static int MAP_SIZE = 800;// 地图大小
-	public static int NODE_SIZE = 40;// 地图上每个单位大小
+	public static int NODE_SIZE = 160;// 地图上每个单位大小
 
 	public static int STEP_MAX = 1000;
 	public static boolean STRAIGHT = true;// 是否能直着走
@@ -44,7 +44,7 @@ public class AStar {
 
 	public static final double THROW_LEVEL_SKEW_RATIO = 1.4;// 非要斜着走
 
-	public static final double THROW_LEVEL_0 = 0.3;// 特别好通过
+	public static final double THROW_LEVEL_0 = 0.1;// 特别好通过
 	public static final double THROW_LEVEL_GROUND = 1;// 正常通过
 	public static final double THROW_LEVEL_1 = 5;// 特难通过
 	public static final double THROW_LEVEL_2 = 10;// 基本无法通过

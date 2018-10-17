@@ -467,6 +467,7 @@ public class AStarApplet extends JApplet implements ActionListener, ItemListener
 					Node.canDraw = false;
 					findObj.findPath(map);
 				} catch (AStarException e1) {
+					Node.canDraw = true;
 					e1.printStackTrace();
 				}
 			}else{

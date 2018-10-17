@@ -18,7 +18,6 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 	@Override
 	public Vector<Node> findPath(Map map) throws AStarException {
 		this.map = map;
-		Vector<Node> vector = map.getNodes();
 		edge = new Vector<>();
 		done = new Vector<>();
 		Node startNode = Node.getStartNode();
@@ -38,7 +37,6 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 		// open表中加入开始节点
 		edge.addElement(Node.getStartNode());
 		int pass = 0;
-		boolean found = false;
 		double start, diff;
 		int state = NOT_FOUND;
 		// 计时并计算
@@ -53,21 +51,24 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 			}
 			diff = System.currentTimeMillis() - start;
 			try {
-				loop.sleep(Math.max((long) (AStar.DRAW_PATH_INTERVAL - diff), 0));
+				Thread.sleep(Math.max((long) (AStar.DRAW_PATH_INTERVAL - diff), 0));
 			} catch (InterruptedException e) {
 			}
-		// System.out.println(diff);
 		}
 		if (state == FOUND) {// 如果找到了下一个点，则继续再找下一个点
-			setPath(map);
+			try {
+				setPath(map);
+			} catch (AStarException e) {
+				System.out.println("Set Path Fail");
+				e.printStackTrace();
+			}
 		} else {
 			System.out.println("No Path Found");
 		}
 	}
 
 	public int step() throws AStarException {
-		int tests = 0;
-		boolean found = false;
+		boolean found = false,found2 = false;
 		boolean growth = false;
 		// 获取结束点
 		Node finish = Node.getEndNode();
@@ -84,24 +85,31 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 				if (next[j] != null) {
 					// 此节点是结束节点则寻路完成
 					if (next[j] == finish) {
-						next[j].addToPathFromStart(now.getDistFromStart(), now);
+						if (!edge.contains(next[j])) {
+							edge.addElement(next[j]);
+						}
 						found = true;
 					}
-					if(next[j].isObs_3()){
+					if (next[j].isObs_3()) {
 						continue;
 					}
-					//
 					next[j].addToPathFromStart(now.getDistFromStart(), now);
-					tests++;
-					if (!next[j].isObs_3() && !edge.contains(next[j])) {
+
+					if (!edge.contains(next[j])) {
 						next[j].toHisWay();
 						edge.addElement(next[j]);
 						growth = true;
 					}
 				}
 			}
-			if (found) {
+			/**
+			 * TOFINE  找到终点后在进行个循环运算，以便找到终点的最小值Cost
+			 */
+			if (found2) {
 				return FOUND;
+			}
+			if(found){
+				found2 = true;
 			}
 			done.addElement(now);
 
@@ -114,14 +122,14 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 		return NOT_FOUND;
 	}
 
-	public void setPath(Map map) {
+	public void setPath(Map map) throws AStarException {
 		System.out.println("Path Found");
 		boolean finished = false;
 		Node next;
 		Node now = Node.getEndNode();
 		Node stop = Node.getStartNode();
-		
-		now.toPath();//虽然不成功，但是可以重新绘制距离
+
+		now.toPath();// 虽然不成功，但是可以重新绘制距离
 
 		while (!finished) {
 			next = map.getLowestAdjacent(now);
@@ -133,7 +141,7 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 				finished = true;
 			}
 			try {
-				loop.sleep(AStar.DRAW_PATH_INTERVAL);
+				Thread.sleep(AStar.DRAW_PATH_INTERVAL);
 			} catch (InterruptedException e) {
 			}
 		}
