@@ -109,7 +109,7 @@ public class Map extends JPanel implements Serializable {
 			}
 			// 左下 最左边的没有左下点
 			if (number % every != 0 && number + every - 1 < Map.nodes.size()) {
-				node_array[5] = Map.nodes.get(number + every);
+				node_array[5] = Map.nodes.get(number + every-1);
 			}
 			// 右上 最右边的没有右上
 			if ((number + 1) % every != 0 && number - every + 1 >= 0) {
@@ -152,6 +152,7 @@ public class Map extends JPanel implements Serializable {
 					continue;
 				}
 				double c = now.getThrowCost(next[i]);
+
 				if(c >= 0){
 					nextDist+= c;
 				}
