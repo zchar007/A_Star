@@ -59,7 +59,8 @@ public class Map extends JPanel implements Serializable {
 		nodes = new Vector<>();
 		this.removeAll();
 		int every = AStar.MAP_SIZE / AStar.NODE_SIZE;
-
+		Node.startNode = null;
+		Node.endNode = null;
 		int index = 0;
 		for (int i = 0; i < every; i++) {
 			for (int j = 0; j < every; j++) {
@@ -126,7 +127,6 @@ public class Map extends JPanel implements Serializable {
 
 	/**
 	 * TOFINE 这里对原作者的逻辑进行了优化<br>
-	 * 原作者设计的逻辑不能满足斜着走取最优，这里终点到起点方向的反向cost进行再次判断，和当前distFromStart值相加后最小的便是最优解
 	 * <br>
 	 * 参照以下地图片段制图即可理解<br>
 	 * 
@@ -145,7 +145,10 @@ public class Map extends JPanel implements Serializable {
 			if (next[i] != null) {
 				double nextDist = next[i].getDistFromStart();
 				//增加过是开始节点，则直接返回，防止在开始节点的前一个点走入死循环
-				if(next[i].isStart()){
+				//如果一圈内有终点，且终点和此点在一同一行或同一列，那么直接返回杰克，否则在斜线上，有可能直接走并不是最好的
+				
+				int position = next[i].getPosition(now);
+				if(next[i].isStart() && position < 10){
 					return next[i];
 				}
 				if(!next[i].isHisWay() && !next[i].isPath()){

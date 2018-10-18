@@ -47,8 +47,8 @@ public class Node extends JComponent implements Serializable {
 	private boolean isPath;// 是不是路径
 	private boolean isHisWay;// 是不是历史路径
 
-	private static Node startNode;
-	private static Node endNode;
+	public static Node startNode;
+	public static Node endNode;
 
 	public static boolean canDraw = true;
 
@@ -146,7 +146,9 @@ public class Node extends JComponent implements Serializable {
 					}
 				}
 			}
-
+			if (null != Node.endNode && Node.endNode.equals(this)) {
+				Node.endNode = null;
+			}
 			Node.startNode = this;
 			my_draw_type = AStar.NODE_START;
 			my_draw_color = AStar.getColor(my_draw_type);
@@ -160,11 +162,18 @@ public class Node extends JComponent implements Serializable {
 					}
 				}
 			}
+			if (null != Node.startNode && Node.startNode.equals(this)) {
+				Node.startNode = null;
+			}
 			Node.endNode = this;
 			my_draw_type = AStar.NODE_END;
 			my_draw_color = AStar.getColor(my_draw_type);
 		} else {
-
+			if (null != Node.startNode && Node.startNode.equals(this)) {
+				this.toStart();
+			} else if (null != Node.endNode && Node.endNode.equals(this)) {
+				this.toEnd();
+			}
 		}
 
 		if (buffer == null) {
@@ -430,7 +439,7 @@ public class Node extends JComponent implements Serializable {
 	 * 
 	 * @return
 	 */
-	private int getPosition(Node fatherNode) {
+	public int getPosition(Node fatherNode) {
 		if (null == fatherNode) {
 			return -1;
 		}
@@ -438,10 +447,10 @@ public class Node extends JComponent implements Serializable {
 		Point point1 = this.getPoint();
 		Point point2 = fatherNode.getPoint();
 
-		int y1 = (int) point1.getX();//行
+		int y1 = (int) point1.getX();// 行
 		int y2 = (int) point2.getX();
 
-		int x1 = (int) point1.getY();//列
+		int x1 = (int) point1.getY();// 列
 		int x2 = (int) point2.getY();
 
 		int h_t, v_t, p_t;
@@ -562,6 +571,7 @@ public class Node extends JComponent implements Serializable {
 			this.my_draw_type = AStar.NODE_OBS_3;
 			this.my_draw_color = AStar.COLOR_OBS_3;
 		}
+
 		this.repaint();
 	}
 }
