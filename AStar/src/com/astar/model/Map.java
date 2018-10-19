@@ -110,7 +110,7 @@ public class Map extends JPanel implements Serializable {
 			}
 			// 左下 最左边的没有左下点
 			if (number % every != 0 && number + every - 1 < Map.nodes.size()) {
-				node_array[5] = Map.nodes.get(number + every-1);
+				node_array[5] = Map.nodes.get(number + every - 1);
 			}
 			// 右上 最右边的没有右上
 			if ((number + 1) % every != 0 && number - every + 1 >= 0) {
@@ -134,42 +134,60 @@ public class Map extends JPanel implements Serializable {
 	 * normalway, fineway, fineway, normalway.........<br>
 	 * normalway, normalway, normalway, normalway.........<br>
 	 * normalway, normalway, normalway, start.........<br>
-	 * @throws AStarException 
+	 * 
+	 * @throws AStarException
 	 * 
 	 */
 	public Node getLowestAdjacent(Node now) throws AStarException {
 		Node next[] = getAdjacent(now);
 		Node small = next[0];
 		double dist = Double.MAX_VALUE;
+
+		Node start = null;
 		for (int i = 0; i < next.length; i++) {
 			if (next[i] != null) {
+
 				double nextDist = next[i].getDistFromStart();
-				//增加过是开始节点，则直接返回，防止在开始节点的前一个点走入死循环
-				//如果一圈内有终点，且终点和此点在一同一行或同一列，那么直接返回杰克，否则在斜线上，有可能直接走并不是最好的
-				
+				// 增加过是开始节点，则直接返回，防止在开始节点的前一个点走入死循环
+				// 如果一圈内有终点，且终点和此点在一同一行或同一列，那么直接返回杰克，否则在斜线上，有可能直接走并不是最好的
+
 				int position = next[i].getPosition(now);
-				if(next[i].isStart() && position < 10){
-					return next[i];
+				if (next[i].isStart()) {
+					start = next[i];
+					if (position < 10) {
+						return start;
+					}
 				}
-				if(!next[i].isHisWay() && !next[i].isPath()){
+				if (!next[i].isHisWay() && !next[i].isPath()) {
 					continue;
 				}
 				double c = now.getThrowCost(next[i]);
+				double distFromStart = next[i].getDistFromStart();
 
-				if(c >= 0){
-					nextDist+= c;
+				if (c >= 0) {
+					nextDist += c;
 				}
-				//}
+				// }
 				if (nextDist < dist && nextDist >= 0) {
 					small = next[i];
-					if(c > 0){
-						dist = next[i].getDistFromStart()+now.getThrowCost(next[i]);
-					}else{
-						dist = next[i].getDistFromStart();
+					if (c > 0) {
+						dist = distFromStart + c;
+					} else {
+						dist = distFromStart;
 					}
-					
+
 				}
 			}
+		}
+		// 当前点 now,已寻到的下一步 small
+		if (null != start && Node.getStartNode().equals(start) && !small.equals(start)) {
+			double startToSmall = now.getThrowCost(start);
+			double startToSmallToNow = small.getThrowCost(start) + now.getThrowCost(small);
+
+			if (startToSmallToNow >= startToSmall) {
+				return start;
+			}
+
 		}
 		return small;
 	}

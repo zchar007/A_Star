@@ -129,7 +129,7 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 		Node now = Node.getEndNode();
 		Node stop = Node.getStartNode();
 
-		now.toPath();// 虽然不成功，但是可以重新绘制距离
+		now.toPath();// 虽然有可能不成功，但是可以重新绘制距离
 
 		while (!finished) {
 			next = map.getLowestAdjacent(now);
@@ -137,7 +137,7 @@ public class OneTailAStar implements AStarFindPath, Runnable {
 			now = next;
 			now.toPath();
 			now.repaint();
-			if (now == stop) {
+			if (now.equals(stop)) {
 				finished = true;
 			}
 

@@ -40,6 +40,8 @@ import com.astar.model.Map;
 import com.astar.model.Node;
 import com.astar.UnitConversionUtil;
 import com.astar.logic.AStarFindPath;
+import com.astar.logic.Fudge;
+import com.astar.logic.HuristicAStar;
 import com.astar.logic.OneTailAStar;
 
 public class AStarApplet extends JApplet implements ActionListener, ItemListener, FocusListener {
@@ -304,7 +306,7 @@ public class AStarApplet extends JApplet implements ActionListener, ItemListener
 		switch (AStar.INSPIRE_TYPE_OLD) {
 		case AStar.INSPIRE_TYPE_CLASSIC: {
 			jrb_classic.setSelected(true);
-			findObj = new OneTailAStar();
+			findObj = new HuristicAStar();
 		}
 			break;
 		case AStar.INSPIRE_TYPE_OLD: {
@@ -314,7 +316,7 @@ public class AStarApplet extends JApplet implements ActionListener, ItemListener
 			break;
 		case AStar.INSPIRE_TYPE_FUDGE: {
 			jrb_fudge.setSelected(true);
-			findObj = new OneTailAStar();
+			findObj = new Fudge();
 		}
 			break;
 		default:

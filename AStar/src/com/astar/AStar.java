@@ -43,7 +43,9 @@ public class AStar {
 	public static long DRAW_PATH_INTERVAL = 20;// 绘制路径方块时的时间间隔，默认20毫秒
 
 	public static final double THROW_LEVEL_SKEW_RATIO = 1.4;// 非要斜着走
-
+	
+	public static final double THROW_LEVEL_START = 100;// 起始点，成本影响最后的逻辑，可能影响结果
+	public static final double THROW_LEVEL_END = 0.0;// 穿过成本为0，所以特容易到达
 	public static final double THROW_LEVEL_0 = 0.1;// 特别好通过
 	public static final double THROW_LEVEL_GROUND = 1;// 正常通过
 	public static final double THROW_LEVEL_1 = 5;// 特难通过

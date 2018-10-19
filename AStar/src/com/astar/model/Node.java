@@ -52,7 +52,7 @@ public class Node extends JComponent implements Serializable {
 
 	public static boolean canDraw = true;
 
-	private transient double distFromStart = 999999999;
+	private transient double distFromStart = -1;
 
 	private static boolean showPath = true;
 
@@ -255,9 +255,10 @@ public class Node extends JComponent implements Serializable {
 		} else if (isObs_3) {
 			return AStar.THROW_LEVEL_3;
 		} else if (isEnd) {
-			return AStar.THROW_LEVEL_GROUND;
+			return AStar.THROW_LEVEL_END;
 		} else if (isStart) {
-			return AStar.THROW_LEVEL_GROUND;
+			System.out.println("用到了START");
+			return AStar.THROW_LEVEL_START;
 		} else {
 			throw new AStarException(this.getClass().getName() + ".getCost():方法有问题，请检查！");
 		}
@@ -535,6 +536,7 @@ public class Node extends JComponent implements Serializable {
 			distFromStart = distSoFar + cost;
 			return;
 		}
+		//只用最短的
 		if (distSoFar + cost < distFromStart) {
 			distFromStart = distSoFar + cost;
 		}
