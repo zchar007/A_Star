@@ -431,6 +431,7 @@ public class AStarApplet extends JApplet implements ActionListener, ItemListener
 		scrollPane_show.setViewportView(map);
 	}
 
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ("Æðµã".equals(e.getActionCommand())) {

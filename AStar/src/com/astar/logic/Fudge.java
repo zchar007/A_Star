@@ -16,6 +16,7 @@ public class Fudge extends HuristicAStar {
 		if (cross < 0)
 			cross = -cross; // absolute value
 
+		
 		return low * (Math.abs(dx1) + Math.abs(dy1) + cross * 0.0002);
 
 		// return low * (Math.abs(a.x-b.x)+Math.abs(a.y-b.y)-1);

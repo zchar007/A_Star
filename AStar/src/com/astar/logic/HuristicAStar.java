@@ -62,6 +62,7 @@ public class HuristicAStar extends OneTailAStar implements AStarFindPath {
 				}
 			}
 		}
+		
 		now = best;
 		// System.out.println(now.getPosition()+" Selected for expansion");
 		edge.removeElement(now);

@@ -151,6 +151,7 @@ public class Map extends JPanel implements Serializable {
 				// 增加过是开始节点，则直接返回，防止在开始节点的前一个点走入死循环
 				// 如果一圈内有终点，且终点和此点在一同一行或同一列，那么直接返回杰克，否则在斜线上，有可能直接走并不是最好的
 
+				
 				int position = next[i].getPosition(now);
 				if (next[i].isStart()) {
 					start = next[i];

@@ -494,9 +494,9 @@ public class Node extends JComponent implements Serializable {
 		AStar.NODE_SIZE = 100;
 		Node n1 = new Node(6);
 		Node n2 = new Node(2);
-		System.out.println(n2.getPosition(n1));
 	}
 
+	
 	public static Node getStartNode() {
 		return startNode;
 	}

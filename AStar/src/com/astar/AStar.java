@@ -4,6 +4,7 @@ import java.awt.Color;
 
 public class AStar {
 
+	
 	public static int MAP_SIZE = 800;// 地图大小
 	public static int NODE_SIZE = 200;// 地图上每个单位大小
 
