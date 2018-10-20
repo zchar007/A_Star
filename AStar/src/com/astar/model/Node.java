@@ -52,7 +52,7 @@ public class Node extends JComponent implements Serializable {
 
 	public static boolean canDraw = true;
 
-	private transient double distFromStart = -1;
+	private double distFromStart = -1;
 
 	private static boolean showPath = true;
 
@@ -257,7 +257,6 @@ public class Node extends JComponent implements Serializable {
 		} else if (isEnd) {
 			return AStar.THROW_LEVEL_END;
 		} else if (isStart) {
-			System.out.println("用到了START");
 			return AStar.THROW_LEVEL_START;
 		} else {
 			throw new AStarException(this.getClass().getName() + ".getCost():方法有问题，请检查！");
@@ -530,7 +529,8 @@ public class Node extends JComponent implements Serializable {
 	 * @param distFromStart
 	 * @throws AStarException
 	 */
-	public void addToPathFromStart(double distSoFar, Node fatherNode) throws AStarException {
+	public void addToPathFromStart(Node fatherNode) throws AStarException {
+		double distSoFar = fatherNode.getDistFromStart();
 		double cost = getThrowCost(fatherNode);
 		if (distFromStart == -1) {
 			distFromStart = distSoFar + cost;
@@ -576,4 +576,13 @@ public class Node extends JComponent implements Serializable {
 
 		this.repaint();
 	}
+
+	@Override
+	public String toString() {
+		return "Node [point=" + this.getPoint() + ",number=" + number + ", isObs_0=" + isObs_0 + ", isGround=" + isGround + ", isObs_1=" + isObs_1
+				+ ", isObs_2=" + isObs_2 + ", isObs_3=" + isObs_3 + ", isEnd=" + isEnd + ", isStart=" + isStart
+				+ ", isPath=" + isPath + ", isHisWay=" + isHisWay + ", distFromStart=" + distFromStart + ", df=" + df
+				+ "]";
+	}
+	
 }

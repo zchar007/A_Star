@@ -456,13 +456,13 @@ public class AStarApplet extends JApplet implements ActionListener, ItemListener
 			AStar.NOW_DRAW_COLOR = AStar.COLOR_START;
 		} else if ("Classic A*".equals(e.getActionCommand())) {
 			AStar.NOW_INSPIRE_TYPE = AStar.INSPIRE_TYPE_CLASSIC;
-			findObj = new OneTailAStar();
+			findObj = new HuristicAStar();
 		} else if ("Old".equals(e.getActionCommand())) {
 			AStar.NOW_INSPIRE_TYPE = AStar.INSPIRE_TYPE_OLD;
 			findObj = new OneTailAStar();
 		} else if ("Fudge".equals(e.getActionCommand())) {
 			AStar.NOW_INSPIRE_TYPE = AStar.INSPIRE_TYPE_FUDGE;
-			findObj = new OneTailAStar();
+			findObj = new Fudge();
 		} else if ("Ѱ·".equals(e.getActionCommand())) {
 			if(null != findObj){
 				try {

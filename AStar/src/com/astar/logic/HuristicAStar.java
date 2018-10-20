@@ -67,13 +67,13 @@ public class HuristicAStar extends OneTailAStar implements AStarFindPath {
 		edge.removeElement(now);
 		done.addElement(now);
 		Node next[] = map.getAdjacent(now);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < next.length; i++) {
 			if (next[i] != null) {
 				if (next[i] == finish) {
 					found = true;
 				}
 				if (!next[i].isObs_3()) {
-					next[i].addToPathFromStart(now.getDistFromStart(), now);
+					next[i].addToPathFromStart(now);
 					tests++;
 					if (!edge.contains(next[i]) && !done.contains(next[i])) {
 						next[i].toHisWay();
